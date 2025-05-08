@@ -1,103 +1,154 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+
+export default function Page() {
+  const [type, setType] = useState<'Suggestion' | 'Bug'>('Suggestion');
+  const [content, setContent] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setStatus('idle');
+
+    if (content.trim() === '') {
+      setError('The "Details" field must be filled.');
+      return;
+    }
+
+    setStatus('loading');
+
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, content, name, email }),
+    });
+
+    if (res.ok) {
+      setStatus('success');
+      setContent('');
+      setName('');
+      setEmail('');
+    } else {
+      setStatus('error');
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-4 font-sans">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-900 shadow-xl border border-gray-700 rounded-2xl p-6 w-full max-w-lg space-y-5"
+      >
+        {/* Branding Header */}
+        <div className="text-center">
+          <div className="text-3xl font-extrabold tracking-wide text-blue-400">GSRP</div>
+          <div className="text-sm text-gray-400">Georgia State Roleplay - Community Feedback</div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div>
+          <label className="block mb-1 font-medium">Username</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            placeholder="Your Username"
+            required
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Email (optional)</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            placeholder="you@example.com"
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Type</label>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value as 'Suggestion' | 'Bug')}
+            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+          >
+            <option value="Suggestion">Suggestion</option>
+            <option value="Bug">Bug Report</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Details</label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className={`w-full p-2 bg-gray-800 text-white border ${
+              error ? 'border-red-500' : 'border-gray-700'
+            } rounded h-32 resize-none`}
+            placeholder="Write your suggestion or bug report here..."
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          {error && <p className="text-red-400 mt-1 text-sm">{error}</p>}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-semibold"
+          disabled={status === 'loading'}
+        >
+          {status === 'loading' ? 'Submitting...' : 'Submit'}
+        </button>
+
+        {/* Success and Error Messages */}
+        {status === 'success' && (
+          <div className="mt-4 text-green-600 bg-green-200 p-3 rounded-xl flex items-center space-x-4">
+            <svg
+              className="w-8 h-8 text-green-700"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span className="text-lg font-semibold">✅ Submission Successful!</span>
+          </div>
+        )}
+
+        {status === 'error' && (
+          <div className="mt-4 text-red-600 bg-red-200 p-3 rounded-xl flex items-center space-x-4">
+            <svg
+              className="w-8 h-8 text-red-700"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10 2a8 8 0 1 1 0 16A8 8 0 0 1 10 2zm-1 4h2v4h-2V6zm0 6h2v2h-2v-2z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="text-lg font-semibold">❌ Something went wrong. Please try again!</span>
+          </div>
+        )}
+      </form>
+    </main>
   );
 }
