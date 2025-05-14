@@ -50,8 +50,8 @@ export default function Page() {
       >
         {/* Branding Header */}
         <div className="text-center">
-          <div className="text-3xl font-extrabold tracking-wide text-blue-400">GSRP</div>
-          <div className="text-sm text-gray-400">Georgia State Roleplay - Community Feedback</div>
+          <div className="text-3xl font-extrabold tracking-wide text-blue-400">KSRP</div>
+          <div className="text-sm text-gray-400">Community Feedback</div>
         </div>
 
         <div>
