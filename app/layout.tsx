@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GSRP Forum",
-  keywords: ['GSRP', "Support", "Fourm"],
+  title: "KSRP Forum",
+  keywords: ['KSRP', "Support", "Fourm"],
 };
 
 export default function RootLayout({
